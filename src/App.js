@@ -1,25 +1,36 @@
 import "./App.css";
-import Card from "./components/Card";
-import AppBar from "./components/AppBar";
-import Grid from "@mui/material/Grid";
-import axios from "axios";
-import { useState } from "react";
+import ReactDOM from "react-dom";
+import Login from "./components/Login";
+import { Navigate, Route, Routes, useRoutes } from "react-router-dom";
+import PGList from "./components/PGList";
+import React from "react";
 
 function App() {
-  const [data, setData] = useState([]);
-  axios.post("https://next-home-api.herokuapp.com/fetchTable").then((data) => {
-    console.log("Response", data.data);
-    setData(data?.data?.data);
-  });
+  let element = useRoutes([
+    {
+      path: "/",
+      element: <Login />,
+      children: [
+        // { path: "login", element: <Navigate to="/login" /> },
+        {
+          path: "login",
+          element: <Login />,
+        },
+        {
+          path: "places",
+          element: <PGList />,
+        },
+      ],
+    },
+    { path: "*", element: <>Not found</> },
+  ]);
+  console.log("Element", element);
   return (
-    <Grid container display="flex">
-      <AppBar />
-      {data.map((each) => (
-        <Grid item xs={3}>
-          <Card cardData={each} />
-        </Grid>
-      ))}
-    </Grid>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="login" element={<Login />} />
+      <Route path="places" element={<PGList />} />
+    </Routes>
   );
 }
 

@@ -1,5 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -17,34 +18,45 @@ export default function LoginForm() {
   const [code, setCode] = React.useState();
   const [showCode, setShowCode] = React.useState(false);
   const [showError, setShowError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [message, setMessage] = React.useState(
+    "Entered email or password is incorrect. Please retry."
+  );
   const navigate = useNavigate();
   const login = () => {
+    setLoading(true);
     axios
       .post("https://next-home-api.herokuapp.com/login", { email, password })
       .then((data) => {
         if (data.data.authenticatedUser) {
+          setLoading(false);
           localStorage.setItem("authenticatedUser", "true");
           navigate("/places");
         } else {
           setShowError(true);
+          setLoading(false);
         }
       });
   };
   const signOn = () => {
+    setLoading(true);
     axios
       .post("https://next-home-api.herokuapp.com/signon", {
         dataTable: "credentials",
         input: { email, password },
       })
       .then((data) => {
+        setLoading(false);
         if (data?.data?.executedSuccessfully) {
           setShowCode(true);
         } else {
+          if (data?.data?.message) setMessage(data?.data?.message);
           setShowError(true);
         }
       });
   };
   const verify = () => {
+    setLoading(true);
     axios
       .post("https://next-home-api.herokuapp.com/verify", { email, code })
       .then((data) => {
@@ -53,6 +65,7 @@ export default function LoginForm() {
         } else {
           setShowError(true);
         }
+        setLoading(false);
       });
   };
   const handleClickOpen = () => {
@@ -65,30 +78,35 @@ export default function LoginForm() {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <LoadingButton
+        loading={loading}
+        variant="outlined"
+        onClick={handleClickOpen}
+      >
         Login or Sign on
-      </Button>
+      </LoadingButton>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Please login to continue</DialogTitle>
         <DialogContent>
           {showCode ? (
-            <><DialogContentText>
-            Verification code is sent to your registered mail id {email}.
-            Please enter the verification code to proceed. Please check the
-            spam list , if you can't find the email.
-          </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="coode"
-              label="Verification code"
-              type="number"
-              fullWidth
-              variant="standard"
-              onChange={(e) => {
-                setCode(e.target.value);
-              }}
-            />
+            <>
+              <DialogContentText>
+                Verification code is sent to your registered mail id {email}.
+                Please enter the verification code to proceed. Please check the
+                spam list , if you can't find the email.
+              </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="coode"
+                label="Verification code"
+                type="number"
+                fullWidth
+                variant="standard"
+                onChange={(e) => {
+                  setCode(e.target.value);
+                }}
+              />
             </>
           ) : (
             <>
@@ -126,41 +144,42 @@ export default function LoginForm() {
         <DialogActions>
           {!showCode ? (
             <>
-              <Button
+              <LoadingButton
+                loading={loading}
                 onClick={login}
                 color="primary"
                 disabled={!email.length || !password.length}
                 variant="contained"
               >
                 Login
-              </Button>
-              <Button
+              </LoadingButton>
+              <LoadingButton
+                loading={loading}
                 onClick={signOn}
                 color="secondary"
                 disabled={!email.length || !password.length}
                 variant="contained"
               >
                 Sign on
-              </Button>
+              </LoadingButton>
             </>
           ) : (
             <>
-              <Button
+              <LoadingButton
+                loading={loading}
                 onClick={verify}
                 color="secondary"
                 disabled={!code?.length}
                 variant="contained"
               >
                 Sign on
-              </Button>
+              </LoadingButton>
             </>
           )}
         </DialogActions>
         {showError && (
           <DialogContent>
-            <Typography color="red">
-              Entered email or password is incorrect. Please retry.
-            </Typography>
+            <Typography color="red">{message}</Typography>
           </DialogContent>
         )}
       </Dialog>

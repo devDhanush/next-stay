@@ -26,7 +26,6 @@ function App() {
     { path: "*", element: <>Not found</> },
   ]);
 
-  console.log("Element", element);
   return (
     <Routes>
       <Route path="/" element={<Login />} />

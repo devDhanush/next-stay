@@ -22,7 +22,6 @@ export default function LoginForm() {
     axios
       .post("https://next-home-api.herokuapp.com/login", { email, password })
       .then((data) => {
-        console.log("Response", data.data);
         if (data.data.authenticatedUser) {
           localStorage.setItem("authenticatedUser", "true");
           navigate("/places");
@@ -38,7 +37,6 @@ export default function LoginForm() {
         input: { email, password },
       })
       .then((data) => {
-        console.log("Response", data);
         if (data?.data?.executedSuccessfully) {
           setShowCode(true);
         } else {
@@ -50,7 +48,6 @@ export default function LoginForm() {
     axios
       .post("https://next-home-api.herokuapp.com/verify", { email, code })
       .then((data) => {
-        console.log("Response", data.data);
         if (data?.data?.authenticatedUser) {
           navigate("/places");
         } else {
@@ -75,6 +72,11 @@ export default function LoginForm() {
         <DialogTitle>Please login to continue</DialogTitle>
         <DialogContent>
           {showCode ? (
+            <><DialogContentText>
+            Verification code is sent to your registered mail id {email}.
+            Please enter the verification code to proceed. Please check the
+            spam list , if you can't find the email.
+          </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
@@ -87,6 +89,7 @@ export default function LoginForm() {
                 setCode(e.target.value);
               }}
             />
+            </>
           ) : (
             <>
               <DialogContentText>
@@ -142,11 +145,6 @@ export default function LoginForm() {
             </>
           ) : (
             <>
-              <DialogContentText>
-                Verification code is sent to your registered mail id {email}.
-                Please enter the verification code to proceed. Please check the
-                spam list , if you can't find the email.
-              </DialogContentText>
               <Button
                 onClick={verify}
                 color="secondary"

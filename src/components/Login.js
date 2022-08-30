@@ -1,42 +1,36 @@
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import LoginForm from "./LoginForm";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const doLogin = () => {
-    navigate("/places");
-  };
   return (
-    <Grid xs={12} display="flex" justifyContent="center" alignItems="center" >
-      <Paper
-        variant="elevation"
-        square
+    <Paper
+      variant="elevation"
+      square
+      display="flex"
+      sx={{
+        backgroundColor: "#1A2027",
+        height: 710,
+      }}
+    >
+      <Typography variant={"h2"} color="primary" align="center">
+        Welcome to Your Next Stay. We help you find the better place for your
+        next stay.
+      </Typography>
+      <Grid
+        container
+        xs={12}
+        spacing={3}
         display="flex"
-        sx={{
-          backgroundColor: "#1A2027",
-
-        }}
+        justifyContent="center"
+        alignItmes="center"
       >
-        <Typography variant={"h2"} color="primary" align="center">
-          Welcome to Your Next Stay. We help you find the better place for your
-          next stay.
-        </Typography>
-
-        <Grid container spacing={3} justifyContent={"center"}>
-          <Grid item>
-            <Button size="large" variant="outlined" onClick={doLogin}>
-              Login
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button size="large" variant="outlined" onClick={doLogin}>
-              Sing up
-            </Button>
-          </Grid>
+        <Grid item>
+          <LoginForm />
         </Grid>
-      </Paper>
-    </Grid>
+      </Grid>
+    </Paper>
   );
 };
 export default Login;

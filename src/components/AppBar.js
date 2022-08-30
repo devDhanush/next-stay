@@ -33,6 +33,7 @@ const ResponsiveAppBar = () => {
   };
 
   const handleCloseUserMenu = () => {
+    localStorage.clear()
     navigate("/login");
     setAnchorElUser(null);
   };
